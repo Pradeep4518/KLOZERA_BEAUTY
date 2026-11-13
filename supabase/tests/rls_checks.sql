@@ -561,6 +561,17 @@ begin
   if v_n <> 1 then raise exception 'FAIL: retailer R cannot see kiosk analysis logs for their store (%)', v_n; end if;
   execute 'reset role';
 
+  -- Anti-spoofing check: Customer A attempts to forge Customer B's identity on INSERT
+  perform set_config('request.jwt.claims', json_build_object('sub', a, 'role', 'authenticated')::text, true); execute 'set local role authenticated';
+  begin
+    insert into customer_biometric_consents (customer_id, consent_biometric_scan, consent_marketing, retention_policy_accepted)
+    values (b::text, true, false, true);
+    raise exception 'FAIL: customer A was able to forge customer B biometric consent';
+  exception when others then
+    if sqlerrm like 'FAIL%' then raise; end if;
+  end;
+  execute 'reset role';
+
   raise notice 'ALL KLOZEVA CHECKS PASSED';
 end $$;
 rollback;
