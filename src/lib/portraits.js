@@ -1,6 +1,6 @@
 
 
-export const createPortraitSvgDataUrl = (skinBase, skinShadow, blushColor, lipColor, hairColor, bgStart, bgEnd, label = '') => {
+export const createPortraitSvgDataUrl = (skinBase, skinShadow, blushColor, lipColor, hairColor, bgStart, bgEnd, label = '', shirtColor = '#FAF7F2') => {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="520" height="620" viewBox="0 0 520 620">
     <title>${label}</title>
     <defs>
@@ -22,8 +22,8 @@ export const createPortraitSvgDataUrl = (skinBase, skinShadow, blushColor, lipCo
     <!-- Back Hair -->
     <path d="M110,270 C95,120 175,65 260,65 C345,65 425,120 410,270 C402,380 420,490 390,560 L130,560 C100,490 118,380 110,270 Z" fill="${hairColor}"/>
     <!-- Shoulders & Neck -->
-    <path d="M215,380 L305,380 L318,475 L202,475 Z" fill="${skinShadow}"/>
-    <path d="M95,620 C110,515 175,470 260,470 C345,470 410,515 425,620 Z" fill="#FAF7F2"/>
+    <path d="M215,380 L305,380 L305,560 L215,560 Z" fill="${skinShadow}"/>
+    <path d="M95,620 C110,515 175,470 260,470 C345,470 410,515 425,620 Z" fill="${shirtColor}"/>
     <path d="M195,472 Q260,525 325,472 L305,465 Q260,502 215,465 Z" fill="${skinBase}"/>
     <!-- Face Contour -->
     <path d="M158,235 C158,142 204,102 260,102 C316,102 362,142 362,235 C362,326 318,398 260,398 C202,398 158,326 158,235 Z" fill="url(#skinGrad)"/>
@@ -59,7 +59,7 @@ export const SAMPLE_PORTRAITS = [
     id: 'preset-medium-warm',
     label: 'Studio Portrait – Warm Medium',
     subtitle: 'Golden undertone • Combination skin',
-    dataUrl: createPortraitSvgDataUrl('#D69E76', '#BD825B', '#D97B66', '#B85D54', '#1F1816', '#F4EAE0', '#E7D5C4', 'Warm Medium'),
+    dataUrl: createPortraitSvgDataUrl('#D69E76', '#BD825B', '#D97B66', '#B85D54', '#1F1816', '#CBB39C', '#CBB39C', 'Warm Medium', '#CBB39C'),
     presetMetrics: { skinTone: 'Medium', undertone: 'Warm', skinType: 'Combination' }
   },
   {

@@ -277,32 +277,32 @@ export default function App() {
         style={{ fontFamily: "'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif" }}
       >
         {/* Top Executive & Kiosk Navigation Header */}
-        <header className="sticky top-0 z-40 h-16 bg-[#FAF7F2]/90 backdrop-blur-md border-b border-[#E8C5C1]/60 px-4 sm:px-8 flex items-center justify-between">
+        <header className="sticky top-0 z-40 h-[94px] bg-[#FAF7F2] border-b border-[#E8DFD5] px-4 sm:px-6 lg:px-[3.4%] flex items-center justify-between">
           <button
             onClick={() => setView('welcome')}
-            className="flex items-center gap-3 text-left cursor-pointer group"
+            className="flex items-center gap-3.5 text-left cursor-pointer group"
           >
-            <div className="w-9 h-9 rounded-xl bg-[#221F1F] text-[#E8C5C1] flex items-center justify-center font-bold text-lg" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <div className="w-11 h-11 rounded-xl bg-[#141212] text-white flex items-center justify-center font-bold text-xl shadow-sm" style={{ fontFamily: "'Playfair Display', serif" }}>
               K
             </div>
             <div>
-              <div className="text-base font-bold tracking-[0.18em] text-[#221F1F] leading-none">
+              <div className="text-base font-bold tracking-[0.16em] text-[#141212] leading-none">
                 KLOZEVA
               </div>
-              <div className="text-[10px] font-semibold tracking-[0.22em] text-[#6E6563] mt-0.5">
+              <div className="text-[10px] font-semibold tracking-[0.22em] text-[#6E6563] mt-1">
                 BEAUTY INTELLIGENCE
               </div>
             </div>
           </button>
 
           {/* Mode Switcher Pills for Seamless Investor Demo */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <button
               onClick={() => setView('kiosk-register')}
-              className={`px-3.5 py-2 rounded-full text-xs font-semibold transition cursor-pointer ${
+              className={`px-5 py-2.5 rounded-full text-sm font-semibold transition cursor-pointer ${
                 view.startsWith('kiosk')
-                  ? 'bg-[#221F1F] text-[#FAF7F2]'
-                  : 'bg-[#F0E6D8] text-[#221F1F] hover:bg-[#E8C5C1]/60'
+                  ? 'bg-[#EFE6DC] text-[#221F1F] shadow-sm'
+                  : 'bg-[#EFE6DC] text-[#221F1F] hover:bg-[#E5D8CC]'
               }`}
             >
               Customer Kiosk
@@ -313,10 +313,10 @@ export default function App() {
                 setRetailerInitialTab('overview');
                 setView(retailerAuthenticated ? 'retailer-dashboard' : 'retailer-login');
               }}
-              className={`px-3.5 py-2 rounded-full text-xs font-semibold transition cursor-pointer ${
+              className={`px-5 py-2.5 rounded-full text-sm font-semibold transition cursor-pointer ${
                 view.startsWith('retailer')
-                  ? 'bg-[#221F1F] text-[#FAF7F2]'
-                  : 'bg-white border border-[#E8C5C1] text-[#221F1F] hover:bg-[#F0E6D8]'
+                  ? 'bg-[#141212] text-[#FAF7F2]'
+                  : 'bg-white border border-[#E5DDD4] text-[#221F1F] hover:bg-[#FAF7F2]'
               }`}
             >
               Retailer Portal
@@ -325,9 +325,9 @@ export default function App() {
             <button
               onClick={handleResetDemoData}
               title="Reset Demo Database"
-              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-white border border-[#E8C5C1] text-[11px] font-medium text-[#6E6563] hover:text-[#221F1F] cursor-pointer"
+              className="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white border border-[#E5DDD4] text-sm font-medium text-[#221F1F] hover:bg-[#FAF7F2] cursor-pointer transition"
             >
-              <RefreshCw className="w-3 h-3" />
+              <RefreshCw className="w-3.5 h-3.5 text-[#221F1F]" />
               Reset Demo
             </button>
           </div>

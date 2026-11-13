@@ -6,112 +6,135 @@ import { SAMPLE_PORTRAITS } from '../lib/portraits';
 
 export const WelcomeScreen = ({ onStartCustomer, onStartRetailer, onOpenSchema }) => {
   return (
-    <div className="min-h-[calc(100vh-64px)] relative overflow-hidden flex flex-col justify-between bg-[#FAF7F2] text-[#221F1F]">
-      {/* Ambient Luxury Gradients */}
-      <div className="pointer-events-none absolute -top-32 -left-32 w-[520px] h-[520px] rounded-full bg-gradient-to-br from-[#E8C5C1]/55 via-[#F0E6D8]/40 to-transparent blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-40 -right-24 w-[600px] h-[600px] rounded-full bg-gradient-to-tl from-[#D8A7A3]/45 via-[#F0E6D8]/60 to-transparent blur-3xl" />
+    <div className="min-h-[calc(100vh-94px)] w-full relative overflow-hidden flex flex-col justify-center bg-[#FAF7F2] text-[#221F1F]">
+      {/* Subtle Warm Luxury Ambient Glow */}
+      <div className="pointer-events-none absolute -top-32 -left-32 w-[520px] h-[520px] rounded-full bg-gradient-to-br from-[#E8C5C1]/30 via-[#F0E6D8]/20 to-transparent blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-40 -right-24 w-[600px] h-[600px] rounded-full bg-gradient-to-tl from-[#D8A7A3]/25 via-[#F0E6D8]/30 to-transparent blur-3xl" />
 
-      <div className="relative z-10 max-w-7xl mx-auto w-full px-6 py-12 lg:py-20 grid lg:grid-cols-12 gap-12 items-center my-auto">
-        {/* Left Editorial Hero */}
-        <div className="lg:col-span-7 space-y-8">
-          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#F0E6D8] border border-[#D8A7A3]/40 text-xs font-semibold tracking-[0.2em] uppercase text-[#221F1F]">
+      {/* Hero Container — Fluid Full-Width 2-Column Grid */}
+      <div className="hero-container w-full max-w-none px-4 sm:px-6 lg:px-[3.4%] py-8 lg:py-12 grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] items-center gap-8 lg:gap-[5%] my-auto relative z-10">
+        {/* Left Column — Editorial Hero Content */}
+        <div className="space-y-6 sm:space-y-7 lg:space-y-8">
+          {/* Badge Pill */}
+          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#EFE4D6] border border-[#DFCFC2] text-xs font-semibold tracking-[0.18em] uppercase text-[#221F1F]">
             <Sparkles className="w-3.5 h-3.5 text-[#B8860B]" />
             <span>KLOZEVA • BEAUTY INTELLIGENCE</span>
           </div>
 
+          {/* Large Hero Headline */}
           <h1
-            className="text-5xl sm:text-6xl lg:text-7xl font-semibold tracking-tight leading-[1.06] text-[#221F1F]"
-            style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', serif" }}
+            className="text-5xl sm:text-6xl md:text-7xl lg:text-[76px] xl:text-[84px] font-normal tracking-[-0.02em] leading-[1.08] text-[#141212]"
+            style={{ fontFamily: "'Playfair Display', serif" }}
           >
             Beauty That <br />
-            <span className="italic font-normal text-[#8E5B56]">Understands</span> You.
+            <span className="italic text-[#9B6862]">Understands</span> You.
           </h1>
 
-          <p className="text-lg sm:text-xl text-[#6E6563] max-w-xl leading-relaxed font-normal">
+          {/* Description Paragraph */}
+          <p className="text-base sm:text-lg lg:text-[19px] xl:text-[20px] text-[#6E6563] leading-[1.6] max-w-xl font-normal pt-1">
             Discover your skin. Find your perfect match. AI-powered facial undertone analysis seamlessly connected to live in-store beauty inventory and virtual shade try-on.
           </p>
 
-          {/* Two Primary CTAs */}
+          {/* Two Primary CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 pt-2">
             <button
               onClick={onStartCustomer}
-              className="group flex items-center justify-center gap-3 px-8 py-4.5 rounded-2xl bg-[#221F1F] text-[#FAF7F2] font-semibold text-base shadow-xl shadow-[#221F1F]/15 hover:bg-[#363131] transition-all cursor-pointer"
+              className="group flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#141212] text-[#FAF7F2] font-semibold text-base shadow-lg shadow-[#141212]/10 hover:bg-[#2C2727] transition-all cursor-pointer"
             >
-              <Sparkles className="w-5 h-5 text-[#E8C5C1]" />
+              <Sparkles className="w-4 h-4 text-[#FAF7F2]" />
               <span>Start Beauty Analysis</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
 
             <button
               onClick={onStartRetailer}
-              className="flex items-center justify-center gap-3 px-8 py-4.5 rounded-2xl bg-white/85 backdrop-blur-sm text-[#221F1F] border border-[#D8A7A3]/70 font-semibold text-base hover:bg-[#F0E6D8]/70 transition-all cursor-pointer"
+              className="flex items-center justify-center gap-2.5 px-8 py-4 rounded-full bg-white text-[#141212] border border-[#E0D5CC] font-semibold text-base hover:bg-[#FAF7F2] transition-all cursor-pointer"
             >
               <Lock className="w-4 h-4 text-[#B8860B]" />
               <span>Retailer Login</span>
             </button>
           </div>
 
-          {/* Investor & Store Value Pillars */}
-          <div className="grid grid-cols-3 gap-4 pt-6 border-t border-[#E8C5C1]/50 max-w-xl">
-            <div>
-              <div className="text-2xl font-bold text-[#221F1F]" style={{ fontFamily: "'Playfair Display', serif" }}>
+          {/* Performance Metrics — 3 Columns with Vertical Dividers */}
+          <div className="grid grid-cols-3 pt-6 max-w-xl">
+            <div className="border-r border-[#E0D5CC] pr-4 sm:pr-6 lg:pr-8">
+              <div className="text-3xl lg:text-[36px] font-bold text-[#141212] leading-none" style={{ fontFamily: "'Playfair Display', serif" }}>
                 96.4%
               </div>
-              <div className="text-xs text-[#6E6563] mt-0.5">Shade Match Precision</div>
+              <div className="text-xs lg:text-[13px] text-[#7A706E] font-medium mt-2 leading-tight">
+                Shade Match Precision
+              </div>
             </div>
-            <div>
-              <div className="text-2xl font-bold text-[#221F1F]" style={{ fontFamily: "'Playfair Display', serif" }}>
+
+            <div className="border-r border-[#E0D5CC] px-4 sm:px-6 lg:px-8">
+              <div className="text-3xl lg:text-[36px] font-bold text-[#141212] leading-none" style={{ fontFamily: "'Playfair Display', serif" }}>
                 &lt; 8 Sec
               </div>
-              <div className="text-xs text-[#6E6563] mt-0.5">Live Kiosk Skin Scan</div>
+              <div className="text-xs lg:text-[13px] text-[#7A706E] font-medium mt-2 leading-tight">
+                Live Kiosk Skin Scan
+              </div>
             </div>
-            <div>
-              <div className="text-2xl font-bold text-[#221F1F]" style={{ fontFamily: "'Playfair Display', serif" }}>
+
+            <div className="pl-4 sm:pl-6 lg:pl-8">
+              <div className="text-3xl lg:text-[36px] font-bold text-[#141212] leading-none" style={{ fontFamily: "'Playfair Display', serif" }}>
                 Real-Time
               </div>
-              <div className="text-xs text-[#6E6563] mt-0.5">ERP & Inventory Sync</div>
+              <div className="text-xs lg:text-[13px] text-[#7A706E] font-medium mt-2 leading-tight">
+                ERP &amp; Inventory Sync
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Right Interactive Preview Card */}
-        <div className="lg:col-span-5">
-          <div className="relative rounded-3xl bg-white/80 backdrop-blur-md border border-[#E8C5C1]/60 p-6 sm:p-8 shadow-2xl shadow-[#221F1F]/5">
-            <div className="flex items-center justify-between mb-5">
-              <span className="text-xs font-semibold uppercase tracking-widest text-[#6E6563]">
+        {/* Right Column — Large Live Kiosk Preview Card */}
+        <div className="w-full">
+          <div className="relative rounded-[28px] lg:rounded-[36px] bg-white p-6 sm:p-7 lg:p-9 shadow-[0_20px_50px_rgba(0,0,0,0.06)] border border-[#EFE8E0]/70 w-full">
+            {/* Card Header */}
+            <div className="flex items-center justify-between mb-4 lg:mb-5">
+              <span className="text-xs lg:text-[13px] font-bold tracking-[0.16em] uppercase text-[#6E6563]">
                 Live Kiosk Preview
               </span>
-              <span className="px-3 py-1 rounded-full text-xs font-medium bg-[#F0E6D8] text-[#221F1F]">
+              <span className="px-4 py-1.5 rounded-full text-xs font-semibold bg-[#F2E5D6] text-[#221F1F]">
                 Store #01 • Hyderabad
               </span>
             </div>
 
-            <div className="relative rounded-2xl overflow-hidden bg-[#F0E6D8] aspect-[4/4.3] mb-6 border border-[#E8C5C1]/50">
+            {/* Inner Image Container — Wide Warm Canvas */}
+            <div className="relative rounded-2xl lg:rounded-[22px] overflow-hidden bg-[#CBB39C] aspect-[1.32/1] mb-5 border border-[#E5DCD4]/40 flex items-center justify-center">
               <img
                 src={SAMPLE_PORTRAITS[0].dataUrl}
                 alt="Kiosk Face Scan Preview"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
               />
-              {/* Scanning Reticle Overlay */}
+
+              {/* Scanning Oval Reticle Overlay */}
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="w-48 h-64 rounded-[100px] border-2 border-dashed border-[#FAF7F2] shadow-[0_0_0_9999px_rgba(34,31,31,0.16)]" />
+                <div className="w-[46%] h-[70%] rounded-[50%] border-2 border-dashed border-white/85" />
               </div>
-              <div className="absolute bottom-3 left-3 right-3 bg-[#221F1F]/85 backdrop-blur-md text-[#FAF7F2] p-3.5 rounded-xl flex items-center justify-between">
+
+              {/* Floating Detected Profile Bar */}
+              <div className="absolute bottom-3 left-3 right-3 lg:bottom-4 lg:left-4 lg:right-4 bg-[#231F1F]/92 backdrop-blur-md text-white px-5 py-3.5 lg:py-4 rounded-xl lg:rounded-2xl flex items-center justify-between shadow-lg">
                 <div>
-                  <div className="text-[11px] uppercase tracking-wider text-[#E8C5C1]">Detected Profile</div>
-                  <div className="text-sm font-semibold">Medium • Warm Undertone • Combination</div>
+                  <div className="text-[10px] lg:text-[11px] font-bold tracking-[0.18em] uppercase text-[#D2C5B8]">
+                    Detected Profile
+                  </div>
+                  <div className="text-sm lg:text-[15px] font-semibold text-white mt-0.5">
+                    Medium • Warm Undertone • Combination
+                  </div>
                 </div>
-                <span className="px-2.5 py-1 rounded-lg bg-[#B8860B] text-white text-xs font-bold">
-                  96% Match
-                </span>
+                <div className="px-3.5 py-1.5 lg:py-2 rounded-xl bg-[#C68618] text-white text-center min-w-[70px]">
+                  <div className="text-xs lg:text-[13px] font-bold leading-tight">96%</div>
+                  <div className="text-[10px] lg:text-[11px] font-semibold leading-tight mt-0.5">Match</div>
+                </div>
               </div>
             </div>
 
-            <div className="flex items-center justify-between text-xs text-[#6E6563]">
+            {/* Connected Brands Footer */}
+            <div className="flex items-center justify-between text-xs lg:text-[13px] text-[#6E6563] pt-1">
               <span>Connected Brands: Maybelline, Lakmé, L’Oréal, MARS</span>
               <button
                 onClick={onOpenSchema}
-                className="underline hover:text-[#221F1F] font-medium cursor-pointer"
+                className="underline hover:text-[#141212] text-[#3E3836] font-medium cursor-pointer transition"
               >
                 Inspect 9-Table DB
               </button>
