@@ -2,10 +2,13 @@ import { describe, expect, it } from 'vitest';
 import {
   MODEL_REGISTRY,
   getModelInformation,
-  isCommerciallyCleared
+  isCommerciallyCleared,
+  isModelPermitted,
+  getActiveModelPolicy
 } from '../src/lib/beautyAI/modelRegistry';
 import {
   initializeHuggingFace,
+  initializeFaceParsingModel,
   getModelStatus,
   validateModelCompatibility,
   getFacialMasks,
@@ -62,6 +65,28 @@ describe('Hugging Face Service & Model Lifecycle', () => {
 
   it('releases AI memory and resources cleanly', () => {
     expect(() => releaseAIResources()).not.toThrow();
+  });
+
+  it('enforces commercial model policy and rejects restricted research weights', async () => {
+    // Under commercial policy, research model is strictly forbidden
+    expect(isModelPermitted('jonathandinu/face-parsing', 'commercial')).toBe(false);
+    expect(isModelPermitted('jonathandinu/face-parsing', 'production')).toBe(false);
+
+    // Under research policy, evaluation is permitted
+    expect(isModelPermitted('jonathandinu/face-parsing', 'research')).toBe(true);
+
+    // MediaPipe is permitted across all policies
+    expect(isModelPermitted('mediapipe-face-landmarker', 'commercial')).toBe(true);
+    expect(isModelPermitted('mediapipe-face-landmarker', 'production')).toBe(true);
+
+    // Active policy default is commercial
+    expect(['commercial', 'production']).toContain(getActiveModelPolicy());
+
+    // Attempting to initialize restricted model under commercial policy returns null safely
+    const pipeline = await initializeFaceParsingModel('jonathandinu/face-parsing');
+    expect(pipeline).toBeNull();
+    const status = getModelStatus();
+    expect(status.lastError).toContain('restricted');
   });
 });
 

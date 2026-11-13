@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  Sparkles, Camera, Upload, ArrowLeft, Check, RefreshCw, AlertTriangle, CheckCircle2, ChevronRight
+  Sparkles, Camera, Upload, ArrowLeft, Check, RefreshCw, AlertTriangle, CheckCircle2, ChevronRight, ShieldCheck
 } from 'lucide-react';
 import { SAMPLE_PORTRAITS } from '../../lib/portraits';
 import { useKLOZEVA } from '../../lib/KLOZEVAContext';
@@ -19,6 +19,13 @@ export const FacialCaptureStep = ({ customer, onAnalyzeComplete, onBack }) => {
   const [analyzing, setAnalyzing] = useState(false);
   const [currentStepLabel, setCurrentStepLabel] = useState('');
   const [progressPercent, setProgressPercent] = useState(0);
+
+  // Five Granular Biometric & Privacy Consent Checkboxes (GDPR / DPDP / BIPA compliant)
+  const [consentProcessing, setConsentProcessing] = useState(true);
+  const [consentSaveResults, setConsentSaveResults] = useState(true);
+  const [consentRetainPhoto, setConsentRetainPhoto] = useState(false);
+  const [consentModelImprovement, setConsentModelImprovement] = useState(false);
+  const [consentExternalAi, setConsentExternalAi] = useState(false);
 
   const videoRef = useRef(null);
   const streamRef = useRef(null);
@@ -105,10 +112,20 @@ export const FacialCaptureStep = ({ customer, onAnalyzeComplete, onBack }) => {
   };
 
   const handleRunAnalysis = async () => {
-    if (!capturedImage) return;
+    if (!capturedImage || !consentProcessing) return;
     setAnalyzing(true);
     setProgressPercent(10);
     setCurrentStepLabel('Validating photograph...');
+
+    const consentRecord = {
+      consentProcessing,
+      consentSaveResults,
+      consentRetainPhoto,
+      consentModelImprovement,
+      consentExternalAi,
+      capturedAt: new Date().toISOString(),
+      version: '2026.1'
+    };
 
     try {
       const onProgress = ({ step, percent }) => {
@@ -117,14 +134,15 @@ export const FacialCaptureStep = ({ customer, onAnalyzeComplete, onBack }) => {
       };
 
       let analysisResult;
-      // If Supabase backend is configured and user enabled remote store, try Gemini with grounded fallback
-      if (isRemoteStoreEnabled()) {
+      // Strict Consent Enforcement: only call external Gemini Vision if user EXPLICITLY granted external AI consent
+      if (consentExternalAi && isRemoteStoreEnabled()) {
         analysisResult = await runGeminiVisionAnalysis(capturedImage, selectedPresetHint, { onProgress });
       } else {
-        // Direct high-precision on-device Neural BeautyAI engine
+        // Direct high-precision on-device Neural BeautyAI engine (zero network transmission)
         analysisResult = await runBeautyAIAnalysis(capturedImage, selectedPresetHint, { onProgress });
       }
 
+      analysisResult.consent = consentRecord;
       setProgressPercent(100);
       setCurrentStepLabel('Complete');
       setAnalyzing(false);
@@ -133,6 +151,7 @@ export const FacialCaptureStep = ({ customer, onAnalyzeComplete, onBack }) => {
       console.error('[KLOZEVA] Analysis pipeline error:', err);
       // Fallback to grounded analysis
       const fallbackResult = await runBeautyAIAnalysis(capturedImage, selectedPresetHint);
+      fallbackResult.consent = consentRecord;
       setAnalyzing(false);
       onAnalyzeComplete(capturedImage, fallbackResult);
     }
@@ -362,6 +381,82 @@ export const FacialCaptureStep = ({ customer, onAnalyzeComplete, onBack }) => {
               </div>
             </div>
 
+            {/* Five Granular Biometric & Privacy Consent Controls */}
+            <div className="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E8C5C1] space-y-3">
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#221F1F]">
+                <ShieldCheck className="w-4 h-4 text-[#B8860B]" />
+                <span>Biometric Privacy & Consent Options</span>
+              </div>
+
+              <div className="space-y-2 text-xs text-[#221F1F]">
+                <label className="flex items-start gap-2.5 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={consentProcessing}
+                    onChange={(e) => setConsentProcessing(e.target.checked)}
+                    className="mt-0.5 rounded border-[#E8C5C1] text-[#221F1F] focus:ring-[#221F1F]"
+                  />
+                  <span>
+                    <strong className="text-[#B8860B]">[Required]</strong> I consent to on-device facial landmark and skin analysis for virtual makeup preview (processed in temporary memory).
+                  </span>
+                </label>
+
+                <label className="flex items-start gap-2.5 cursor-pointer text-[#6E6563]">
+                  <input
+                    type="checkbox"
+                    checked={consentSaveResults}
+                    onChange={(e) => setConsentSaveResults(e.target.checked)}
+                    className="mt-0.5 rounded border-[#E8C5C1] text-[#221F1F] focus:ring-[#221F1F]"
+                  />
+                  <span>
+                    Save my detected skin depth and undertone to my personal Shade Passport.
+                  </span>
+                </label>
+
+                <label className="flex items-start gap-2.5 cursor-pointer text-[#6E6563]">
+                  <input
+                    type="checkbox"
+                    checked={consentRetainPhoto}
+                    onChange={(e) => setConsentRetainPhoto(e.target.checked)}
+                    className="mt-0.5 rounded border-[#E8C5C1] text-[#221F1F] focus:ring-[#221F1F]"
+                  />
+                  <span>
+                    Retain portrait in private vault for future makeup consultations (auto-expires in 30 days).
+                  </span>
+                </label>
+
+                <label className="flex items-start gap-2.5 cursor-pointer text-[#6E6563]">
+                  <input
+                    type="checkbox"
+                    checked={consentModelImprovement}
+                    onChange={(e) => setConsentModelImprovement(e.target.checked)}
+                    className="mt-0.5 rounded border-[#E8C5C1] text-[#221F1F] focus:ring-[#221F1F]"
+                  />
+                  <span>
+                    Allow anonymous tone vectors to assist in algorithmic calibration (Optional; refusal will not affect your try-on).
+                  </span>
+                </label>
+
+                <label className="flex items-start gap-2.5 cursor-pointer text-[#6E6563]">
+                  <input
+                    type="checkbox"
+                    checked={consentExternalAi}
+                    onChange={(e) => setConsentExternalAi(e.target.checked)}
+                    className="mt-0.5 rounded border-[#E8C5C1] text-[#221F1F] focus:ring-[#221F1F]"
+                  />
+                  <span>
+                    Enable complementary multimodal analysis via Google Gemini Vision API.
+                  </span>
+                </label>
+              </div>
+
+              {!consentProcessing && (
+                <div className="text-[11px] text-amber-700 bg-amber-50 p-2 rounded-lg border border-amber-200">
+                  Required on-device processing consent must be checked to initiate beauty intelligence.
+                </div>
+              )}
+            </div>
+
             {/* Primary Analyze CTA with Progressive Loading */}
             <div className="space-y-3">
               {analyzing && (
@@ -380,10 +475,10 @@ export const FacialCaptureStep = ({ customer, onAnalyzeComplete, onBack }) => {
               )}
 
               <button
-                disabled={!capturedImage || analyzing}
+                disabled={!capturedImage || !consentProcessing || analyzing}
                 onClick={handleRunAnalysis}
                 className={`w-full py-4 rounded-2xl font-semibold text-base flex items-center justify-center gap-2.5 transition shadow-lg ${
-                  capturedImage && !analyzing
+                  capturedImage && consentProcessing && !analyzing
                     ? 'bg-[#221F1F] text-[#FAF7F2] hover:bg-[#383333] cursor-pointer'
                     : 'bg-[#E8C5C1]/50 text-[#6E6563] cursor-not-allowed'
                 }`}

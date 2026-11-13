@@ -2,9 +2,22 @@
  * KLOZEVA Hugging Face Service & Model Lifecycle Manager
  * Handles client-side browser inference via @huggingface/transformers with
  * lazy loading, resource cleanup, model registry queries, and fallback handling.
+ *
+ * Enforces strict environment-based model policy:
+ * - 'commercial' / 'production': Research-only weights (e.g. jonathandinu/face-parsing)
+ *   are strictly rejected from downloading or executing. Approved commercial baseline
+ *   (MediaPipe FaceLandmarker + anatomical polygon masks) or cleared commercial checkpoints
+ *   are enforced.
+ * - 'research' / 'development': Research models permitted for evaluation.
  */
 
-import { MODEL_REGISTRY, getModelInformation as getRegisteredModelInfo } from './beautyAI/modelRegistry';
+import {
+  MODEL_REGISTRY,
+  MODEL_TIERS,
+  getActiveModelPolicy,
+  isModelPermitted,
+  getModelInformation as getRegisteredModelInfo
+} from './beautyAI/modelRegistry';
 import { generateMasksFromLandmarks } from './beautyAI/faceParsing';
 import { detectLandmarks } from './beautyAI/faceLandmarks';
 import { sRGBToCIELAB, calculateITA, classifySkinDepthFromITA, filterSkinPixels } from './beautyAI/imageProcessing';
@@ -15,7 +28,8 @@ let modelStatus = {
   loading: false,
   currentModel: null,
   device: 'unknown',
-  lastError: null
+  lastError: null,
+  policy: getActiveModelPolicy()
 };
 
 /**
@@ -36,6 +50,7 @@ export const initializeHuggingFace = async () => {
     env.allowLocalModels = false;
     modelStatus.initialized = true;
     modelStatus.lastError = null;
+    modelStatus.policy = getActiveModelPolicy();
     return true;
   } catch (err) {
     modelStatus.initialized = false;
@@ -46,25 +61,44 @@ export const initializeHuggingFace = async () => {
 };
 
 /**
- * 2. Initialize Face Parsing model (SegFormer B0)
+ * 2. Initialize Face Parsing model with strict commercial policy check
+ * @param {string|null} [modelId=null]
  */
-export const initializeFaceParsingModel = async (modelId = MODEL_REGISTRY.FACE_PARSING.id) => {
-  if (hfPipeline && modelStatus.currentModel === modelId) return hfPipeline;
+export const initializeFaceParsingModel = async (modelId = null) => {
+  const policy = getActiveModelPolicy();
+  modelStatus.policy = policy;
+
+  const targetModelId = modelId || (
+    (policy === 'commercial' || policy === 'production')
+      ? MODEL_REGISTRY.FACE_PARSING_COMMERCIAL.id
+      : MODEL_REGISTRY.FACE_PARSING_RESEARCH.id
+  );
+
+  // Policy Enforcement Gate
+  if (!isModelPermitted(targetModelId, policy)) {
+    const refusalReason = `[KLOZEVA COMPLIANCE] Model "${targetModelId}" is restricted under active policy "${policy}". Refusing to download or execute non-commercial weights.`;
+    console.warn(refusalReason);
+    modelStatus.loading = false;
+    modelStatus.lastError = refusalReason;
+    return null;
+  }
+
+  if (hfPipeline && modelStatus.currentModel === targetModelId) return hfPipeline;
 
   modelStatus.loading = true;
   try {
     await initializeHuggingFace();
     const { pipeline } = await import('@huggingface/transformers');
-    hfPipeline = await pipeline('image-segmentation', modelId, {
+    hfPipeline = await pipeline('image-segmentation', targetModelId, {
       device: modelStatus.device === 'webgpu' ? 'webgpu' : 'wasm'
     });
-    modelStatus.currentModel = modelId;
+    modelStatus.currentModel = targetModelId;
     modelStatus.loading = false;
     return hfPipeline;
   } catch (err) {
     modelStatus.loading = false;
     modelStatus.lastError = err.message;
-    console.warn(`[KLOZEVA] Hugging Face model load for ${modelId} unavailable: ${err.message}. Using high-precision landmark parsing fallback.`);
+    console.warn(`[KLOZEVA] Hugging Face model load for ${targetModelId} unavailable: ${err.message}. Using commercial MediaPipe anatomical baseline.`);
     return null;
   }
 };
@@ -75,21 +109,27 @@ export const initializeFaceParsingModel = async (modelId = MODEL_REGISTRY.FACE_P
 export const getFacialMasks = async (imageElement, options = {}) => {
   const width = options.width || imageElement.naturalWidth || imageElement.width || 512;
   const height = options.height || imageElement.naturalHeight || imageElement.height || 512;
+  const policy = getActiveModelPolicy();
 
-  // 1. First run MediaPipe landmark detection
+  // 1. Run MediaPipe landmark detection (Commercially Cleared Baseline)
   const landmarkRes = await detectLandmarks(imageElement);
 
   // 2. Generate anatomical masks
   const masks = generateMasksFromLandmarks(landmarkRes.landmarks, width, height);
+  masks.modelId = MODEL_REGISTRY.FACE_LANDMARKS.id;
+  masks.modelVersion = MODEL_REGISTRY.FACE_LANDMARKS.version;
+  masks.commercialCleared = true;
+  masks.modelTier = MODEL_TIERS.COMMERCIAL_FALLBACK;
+  masks.license = 'Apache-2.0';
 
-  // 3. If Hugging Face pipeline is active, extract and map real segmentation masks
-  if (hfPipeline) {
+  // 3. If Hugging Face pipeline is active AND permitted under current policy, refine with neural segmentation
+  if (hfPipeline && isModelPermitted(modelStatus.currentModel, policy)) {
     try {
-      // Real HF SegFormer segmentation inference
       const segments = await hfPipeline(imageElement);
       if (Array.isArray(segments) && segments.length > 0) {
-        masks.modelId = MODEL_REGISTRY.FACE_PARSING.id;
-        masks.modelVersion = MODEL_REGISTRY.FACE_PARSING.version;
+        masks.modelId = modelStatus.currentModel;
+        masks.modelVersion = '1.0.0';
+        masks.modelTier = MODEL_TIERS.COMMERCIAL_PRODUCTION;
 
         const labelMap = {
           skin: 'skin',
@@ -128,7 +168,7 @@ export const getFacialMasks = async (imageElement, options = {}) => {
         }
       }
     } catch (e) {
-      console.warn('[KLOZEVA] SegFormer segmentation notice:', e.message);
+      console.warn('[KLOZEVA] Neural segmentation pipeline exception, preserving MediaPipe baseline:', e.message);
     }
   }
 
@@ -225,7 +265,7 @@ export const analyzeUndertone = (meanA, meanB, meanL) => {
 /**
  * 6. Get model information from registry
  */
-export const getModelInformation = (engineKey = 'FACE_PARSING') => {
+export const getModelInformation = (engineKey = 'FACE_PARSING_RESEARCH') => {
   return getRegisteredModelInfo(engineKey);
 };
 
@@ -235,14 +275,15 @@ export const getModelInformation = (engineKey = 'FACE_PARSING') => {
 export const getModelStatus = () => {
   return {
     ...modelStatus,
-    activeEngine: hfPipeline ? 'huggingface_transformers' : 'mediapipe_cielab_runtime'
+    activeEngine: hfPipeline ? 'huggingface_transformers' : 'mediapipe_cielab_runtime',
+    policy: getActiveModelPolicy()
   };
 };
 
 /**
  * 8. Validate model compatibility with current browser environment
  */
-export const validateModelCompatibility = (engineKey = 'FACE_PARSING') => {
+export const validateModelCompatibility = (engineKey = 'FACE_PARSING_RESEARCH') => {
   const info = getRegisteredModelInfo(engineKey);
   if (!info) return { compatible: false, reason: 'Model not found in registry' };
 
@@ -277,4 +318,3 @@ export const releaseAIResources = () => {
   modelStatus.loading = false;
   modelStatus.currentModel = null;
 };
-

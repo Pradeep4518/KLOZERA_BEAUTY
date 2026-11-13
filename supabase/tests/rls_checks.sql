@@ -517,6 +517,50 @@ begin
   end if;
   execute 'reset role';
 
+  -- =========================================================================
+  -- Beauty AI Multi-Tenant & Biometric Privacy RLS Verification
+  -- =========================================================================
+  -- Customer A inserts a beauty analysis log
+  perform set_config('request.jwt.claims', json_build_object('sub', a, 'role', 'authenticated')::text, true); execute 'set local role authenticated';
+  insert into beauty_ai_analysis_logs (customer_id, business_id, model_id, detected_skin_tone, detected_undertone, detected_skin_type, confidence_score)
+  values (a::text, bid, 'mediapipe-face-landmarker', 'Medium', 'Warm', 'Normal', 0.92);
+
+  insert into customer_biometric_consents (customer_id, consent_biometric_scan, consent_marketing, retention_policy_accepted)
+  values (a::text, true, false, true);
+
+  -- Customer A can see their own log
+  select count(*) into v_n from beauty_ai_analysis_logs where customer_id = a::text;
+  if v_n <> 1 then raise exception 'FAIL: customer A cannot see their own beauty AI log (%)', v_n; end if;
+
+  select count(*) into v_n from customer_biometric_consents where customer_id = a::text;
+  if v_n <> 1 then raise exception 'FAIL: customer A cannot see their own biometric consent (%)', v_n; end if;
+  execute 'reset role';
+
+  -- Customer B CANNOT see Customer A's log or biometric consent
+  perform set_config('request.jwt.claims', json_build_object('sub', b, 'role', 'authenticated')::text, true); execute 'set local role authenticated';
+  select count(*) into v_n from beauty_ai_analysis_logs where customer_id = a::text;
+  if v_n <> 0 then raise exception 'FAIL: customer B can see customer A beauty AI log (%)', v_n; end if;
+
+  select count(*) into v_n from customer_biometric_consents where customer_id = a::text;
+  if v_n <> 0 then raise exception 'FAIL: customer B can see customer A biometric consent (%)', v_n; end if;
+  execute 'reset role';
+
+  -- Anonymous user CANNOT see beauty AI logs or biometric consents
+  execute 'set local role anon';
+  begin
+    perform count(*) from customer_biometric_consents;
+    raise exception 'FAIL: anon can query customer_biometric_consents';
+  exception when others then
+    if sqlerrm like 'FAIL%' then raise; end if;
+  end;
+  execute 'reset role';
+
+  -- Retailer R (member of business bid) CAN see logs associated with bid
+  perform set_config('request.jwt.claims', json_build_object('sub', r, 'role', 'authenticated')::text, true); execute 'set local role authenticated';
+  select count(*) into v_n from beauty_ai_analysis_logs where business_id = bid;
+  if v_n <> 1 then raise exception 'FAIL: retailer R cannot see kiosk analysis logs for their store (%)', v_n; end if;
+  execute 'reset role';
+
   raise notice 'ALL KLOZEVA CHECKS PASSED';
 end $$;
 rollback;

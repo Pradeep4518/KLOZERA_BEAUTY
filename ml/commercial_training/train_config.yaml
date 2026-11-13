@@ -1,0 +1,58 @@
+# KLOZEVA Commercial SegFormer B0 Training Configuration
+# Model Architecture: nvidia/mit-b0 (Apache-2.0)
+# Framework: PyTorch 2.4+ / Hugging Face Transformers
+
+model:
+  architecture: "segformer-b0"
+  backbone: "nvidia/mit-b0"
+  num_classes: 19
+  pretrained_backbone: true
+  ignore_index: 255
+
+dataset:
+  manifest_path: "ml/commercial_training/manifest.json"
+  image_size: [512, 512]
+  mean: [0.485, 0.456, 0.406]
+  std: [0.229, 0.224, 0.225]
+  data_augmentation:
+    random_flip_horizontal: true
+    color_jitter:
+      brightness: 0.15
+      contrast: 0.15
+      saturation: 0.1
+    random_scale: [0.9, 1.1]
+
+training:
+  batch_size: 16
+  gradient_accumulation_steps: 2
+  learning_rate: 6.0e-5
+  weight_decay: 0.01
+  epochs: 40
+  warmup_ratio: 0.1
+  scheduler: "cosine"
+  mixed_precision: "fp16"
+  optimizer: "AdamW"
+  seed: 42
+
+loss:
+  type: "CrossEntropyLoss"
+  label_smoothing: 0.05
+  class_weights:
+    skin: 1.0
+    u_lip: 2.5
+    l_lip: 2.5
+    l_eye: 2.0
+    r_eye: 2.0
+    mouth: 2.0
+
+checkpoint:
+  output_dir: "ml/commercial_training/checkpoints"
+  save_total_limit: 3
+  eval_strategy: "epoch"
+  metric_for_best_model: "eval_mean_iou"
+  greater_is_better: true
+
+hardware_estimate:
+  gpu: "1x NVIDIA A100 (40GB/80GB) or 2x RTX 4090"
+  estimated_training_time_hours: 12
+  estimated_cloud_cost_usd: 35.00

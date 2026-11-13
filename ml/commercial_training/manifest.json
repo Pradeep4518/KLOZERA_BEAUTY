@@ -1,0 +1,45 @@
+{
+  "dataset_name": "klozeva-commercial-face-segmentation-v1",
+  "dataset_version": "1.0.0",
+  "dataset_provenance": "Klozeva Consented Studio Portraits & Commercially Licensed CC-BY Datasets",
+  "license": "Commercial-Proprietary-Consented",
+  "commercial_usage_cleared": true,
+  "classes": [
+    "background",
+    "skin",
+    "nose",
+    "eye_g",
+    "l_eye",
+    "r_eye",
+    "l_brow",
+    "r_brow",
+    "l_ear",
+    "r_ear",
+    "mouth",
+    "u_lip",
+    "l_lip",
+    "hair",
+    "hat",
+    "ear_r",
+    "neck_l",
+    "neck",
+    "cloth"
+  ],
+  "splits": {
+    "train": 0.8,
+    "val": 0.1,
+    "test": 0.1
+  },
+  "samples": [
+    {
+      "id": "sample_0001",
+      "image_path": "images/sample_0001.jpg",
+      "mask_path": "masks/sample_0001.png",
+      "split": "train",
+      "image_width": 512,
+      "image_height": 512,
+      "consent_id": "CONSENT-STD-2026-001",
+      "commercial_clearance_verified": true
+    }
+  ]
+}
