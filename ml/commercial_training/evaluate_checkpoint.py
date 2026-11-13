@@ -22,3 +22,4 @@ def evaluate_checkpoint(checkpoint_path: Path, manifest_path: Path):
 if __name__ == "__main__":
     base = Path(__file__).parent
     evaluate_checkpoint(base / "checkpoints" / "best_model", base / "manifest.json")
+

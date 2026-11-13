@@ -35,3 +35,4 @@ def preprocess_dataset(manifest_path: Path, output_dir: Path):
 if __name__ == "__main__":
     base = Path(__file__).parent
     preprocess_dataset(base / "manifest.json", base / "processed")
+

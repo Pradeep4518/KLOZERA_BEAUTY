@@ -102,3 +102,4 @@ $$;
 
 > [!IMPORTANT]
 > This assessment represents a rigorous technical implementation of privacy-by-design, data minimization, and granular consent mechanisms. It does not constitute formal legal counsel. Prior to multi-tenant commercial deployment in regulated jurisdictions (EU, UK, US states, India), KLOZEVA must submit this document to qualified external privacy counsel for formal legal sign-off.
+

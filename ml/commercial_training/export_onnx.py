@@ -20,3 +20,4 @@ def export_onnx(checkpoint_dir: Path, output_dir: Path):
 if __name__ == "__main__":
     base = Path(__file__).parent
     export_onnx(base / "checkpoints", base / "onnx_export")
+

@@ -36,3 +36,4 @@ def evaluate_landmarks(output_report: str = "ml/reports/landmarks_evaluation.jso
 
 if __name__ == "__main__":
     evaluate_landmarks()
+

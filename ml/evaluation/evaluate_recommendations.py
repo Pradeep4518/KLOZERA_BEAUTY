@@ -38,3 +38,4 @@ def evaluate_recommendations(output_report: str = "ml/reports/recommendations_ev
 
 if __name__ == "__main__":
     evaluate_recommendations()
+

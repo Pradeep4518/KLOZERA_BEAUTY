@@ -54,3 +54,4 @@ KLOZEVA operates under three discrete runtime environments with unambiguous oper
 1. **No Sensitive Keys in Bundle:** The frontend build (`dist/`) was scanned using automated grep patterns for `service_role`, `SUPABASE_KEY`, and raw private keys. Zero private credentials exist in client chunks.
 2. **Git Tracking Protection:** `.gitignore` explicitly prevents `.env`, `.env.local`, `.env.production`, and credential archives from being tracked in version control.
 3. **Fail-Closed Runtime Validation:** If `VITE_APP_MODE=production` is active and `VITE_SUPABASE_URL` or `VITE_SUPABASE_ANON_KEY` is missing, `RetailerLoginScreen.jsx` fails closed with an explicit security alert rather than falling back to demo mode.
+

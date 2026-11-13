@@ -96,3 +96,4 @@ ROLLBACK
    ```bash
    pg_dump "$DATABASE_URL" --schema=public --clean --if-exists > klozeva_backup_$(date +%F).sql
    ```
+

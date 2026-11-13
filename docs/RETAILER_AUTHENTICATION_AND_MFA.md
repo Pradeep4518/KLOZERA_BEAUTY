@@ -129,3 +129,4 @@ Frontend claims are never trusted for authorization:
 | **Invalid MFA Code** | Submitting incorrect 6-digit code | **PASSED:** Rejects invalid token. |
 | **Suspended Account** | Retailer marked suspended in profile | **PASSED:** Denies access and signs out. |
 | **Shopper Role Denial** | Customer account attempting retailer login | **PASSED:** Denies access (lacks business privilege). |
+

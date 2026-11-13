@@ -68,3 +68,4 @@ if __name__ == "__main__":
         target = Path(sys.argv[1])
     ok = verify_manifest(target)
     sys.exit(0 if ok else 1)
+

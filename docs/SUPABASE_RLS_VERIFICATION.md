@@ -58,3 +58,4 @@ The test suite executes 566 lines of transactional SQL covering:
 6. **Differential Privacy (k=5 Analytics):**
    - Less than 5 distinct customer views -> Count is suppressed (`views = null`).
    - Greater than or equal to 5 distinct customer views -> Real aggregated view count returned without PII leakage.
+

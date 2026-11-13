@@ -133,3 +133,4 @@ begin
   return purged_count;
 end;
 $$;
+

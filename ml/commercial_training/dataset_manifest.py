@@ -54,3 +54,4 @@ def create_template_manifest(output_path: Path):
 if __name__ == "__main__":
     out = Path(__file__).parent / "manifest.json"
     create_template_manifest(out)
+
