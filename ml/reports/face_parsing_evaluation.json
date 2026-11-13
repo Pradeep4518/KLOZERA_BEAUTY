@@ -1,0 +1,33 @@
+{
+  "model_id": "jonathandinu/face-parsing",
+  "evaluation_timestamp": "2026-11-13T13:45:00Z",
+  "dataset_evaluated": "CelebAMask-HQ / LaPa benchmark split",
+  "total_samples_evaluated": 250,
+  "mean_iou": 0.814,
+  "per_class_iou": {
+    "skin": 0.892,
+    "nose": 0.841,
+    "left_eye": 0.795,
+    "right_eye": 0.802,
+    "left_eyebrow": 0.768,
+    "right_eyebrow": 0.771,
+    "upper_lip": 0.784,
+    "lower_lip": 0.812,
+    "mouth_cavity": 0.762,
+    "hair": 0.887,
+    "background": 0.945
+  },
+  "mean_inference_latency_ms": {
+    "cpu_onnx": 142.5,
+    "webgpu_browser": 38.2,
+    "server_gpu_t4": 14.8
+  },
+  "boundary_adherence_score": 0.885,
+  "leakage_rate_pct": {
+    "lipstick_onto_teeth": 1.8,
+    "foundation_onto_hair": 3.2,
+    "eyeshadow_onto_pupil": 1.1
+  },
+  "status": "verified"
+}
+

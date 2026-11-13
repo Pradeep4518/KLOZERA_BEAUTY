@@ -1,0 +1,13 @@
+project_id = "klozeva"
+[api]
+port = 54321
+[db]
+port = 54322
+major_version = 15
+[auth]
+site_url = "http://localhost:5173"
+additional_redirect_urls = ["http://localhost:5173/login", "http://localhost:5173/reset", "http://localhost:5173/customer/dashboard"]
+enable_signup = true
+minimum_password_length = 10
+[auth.email]
+enable_confirmations = true

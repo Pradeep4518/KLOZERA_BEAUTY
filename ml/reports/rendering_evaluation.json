@@ -1,0 +1,23 @@
+{
+  "evaluation_timestamp": "2026-11-13T13:45:00Z",
+  "renderer_type": "Modular Layered Canvas Compositor with Catmull-Rom Contour & Feathering",
+  "frame_rate_target_fps": 60,
+  "measured_fps_mac_m2": 59.8,
+  "measured_fps_intel_iris_xe": 58.4,
+  "render_layer_latencies_ms": {
+    "foundation_dual_pass": 2.4,
+    "eyeshadow_crease_blend": 1.2,
+    "blush_malar_radial": 1.1,
+    "lipstick_vermilion_cutout": 1.8,
+    "total_frame_composite_time": 6.5
+  },
+  "quality_metrics": {
+    "texture_preservation_ssim": 0.942,
+    "boundary_spill_rate_pct": 1.2,
+    "lip_inner_mouth_occlusion_pct": 99.4,
+    "blush_malar_placement_accuracy_pct": 98.1
+  },
+  "identity_preservation_score": 0.985,
+  "status": "verified"
+}
+
