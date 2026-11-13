@@ -206,6 +206,7 @@ export const VirtualMakeupTryOnStudio = ({ initialPhoto, analysis, recommendatio
       renderTryOnFrame();
     };
     img.src = initialPhoto;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialPhoto, detectorStatus]);
 
   // Handle Live Camera Stream Activation
@@ -250,6 +251,7 @@ export const VirtualMakeupTryOnStudio = ({ initialPhoto, analysis, recommendatio
         streamRef.current = null;
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sourceMode]);
 
   // ==========================================================================

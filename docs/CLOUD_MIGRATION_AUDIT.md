@@ -69,3 +69,4 @@ All 14 migrations form an unbroken, forward-only, idempotent migration chain. No
 ```bash
 npx supabase db push
 ```
+

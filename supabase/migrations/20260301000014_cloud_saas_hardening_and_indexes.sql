@@ -76,3 +76,4 @@ end;
 $$;
 
 grant execute on function public.get_beauty_ai_system_health() to anon, authenticated;
+

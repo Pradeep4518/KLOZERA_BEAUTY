@@ -87,3 +87,4 @@ where schemaname = 'public';
 \i supabase/tests/rls_checks.sql
 ```
 *Expected Output:* `NOTICE: ALL KLOZEVA CHECKS PASSED`
+

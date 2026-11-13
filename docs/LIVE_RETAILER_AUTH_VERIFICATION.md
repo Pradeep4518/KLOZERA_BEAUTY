@@ -43,3 +43,4 @@ To enroll a new store manager with MFA on the live Supabase project:
    Manager scans QR code and enters the 6-digit confirmation code.
 4. **Subsequent Logins:**
    Every subsequent password login triggers the AAL2 prompt in `RetailerLoginScreen.jsx`.
+

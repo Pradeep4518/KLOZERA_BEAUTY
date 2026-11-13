@@ -62,3 +62,4 @@ Configure production DNS and edge CDN (Cloudflare / Netlify / Vercel):
 1. **Automated Rollback:** If any post-deployment smoke test fails, revert CDN alias to previous immutable deployment artifact within 60 seconds.
 2. **Database Rollback:** Forward migrations are non-destructive; database state can be restored via Point-In-Time Recovery (PITR) to pre-migration timestamp.
 3. **Data Breach Protocol:** If unauthorized biometric access is suspected, execute emergency kill switch revoking all active Supabase anon keys and flush the `customer-portraits-private` bucket.
+

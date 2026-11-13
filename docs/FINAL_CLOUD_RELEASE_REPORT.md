@@ -90,3 +90,4 @@ To transition **CLOUD MULTI-TENANT SAAS** from **CONDITIONAL GO** to **UNQUALIFI
    Submit [`docs/LEGAL_REVIEW_HANDOFF.md`](file:///c:/Users/Pradeep/OneDrive/Desktop/ka_final_beaut/klozeva/docs/LEGAL_REVIEW_HANDOFF.md) to external legal counsel for regional certification (India DPDP Rules, EU GDPR, Illinois BIPA).
 4. **Step 4: Production Cloud Promotion**
    Following staging sign-off, deploy to the production Supabase cluster and set production environment variables (`VITE_APP_MODE=production`, `VITE_BEAUTY_BACKEND=supabase`).
+

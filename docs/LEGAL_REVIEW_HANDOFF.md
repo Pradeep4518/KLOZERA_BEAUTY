@@ -60,3 +60,4 @@ Prior to authorizing the live public cloud SaaS release, external counsel must r
 
 ---
 *Notice: This document is prepared for qualified legal review. KLOZEVA marks formal legal release approval as **PENDING** until counsel supplies written clearance.*
+

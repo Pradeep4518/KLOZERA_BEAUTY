@@ -38,3 +38,4 @@ When a customer triggers account deletion or data erasure:
 1. `public.delete_my_account()` triggers cascading removal of all customer records in `public.profiles`, `customer_preferences`, `analysis_results`, and `customer_biometric_consents`.
 2. A database webhook or scheduled Edge Function deletes the corresponding `{user_id}/` storage folder in `customer-portraits-private`.
 3. In local kiosk mode, clearing customer state or closing the session flushes all image buffers from JavaScript heap memory immediately.
+
